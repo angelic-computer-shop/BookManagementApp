@@ -1,0 +1,17 @@
+@Configuration
+public class GraphQLConfig {
+
+    @Bean
+    public GraphQLSchema graphQLSchema(BookService bookService) {
+        return SchemaParser.newParser()
+                .files("schema.graphqls")
+                .resolvers(new Query(bookService), new Mutation(bookService))
+                .build()
+                .makeExecutableSchema();
+    }
+
+    @Bean
+    public GraphQLServlet graphQLServlet(GraphQLSchema graphQLSchema) {
+        return new SimpleGraphQLHttpServlet(new GraphQL.Builder(graphQLSchema).build());
+    }
+}
